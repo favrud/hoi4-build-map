@@ -52,8 +52,21 @@ def blocks_of(t, key):
 
 
 def main():
-    mod = os.path.abspath(sys.argv[1] if len(sys.argv) > 1 else ".")
-    game = sys.argv[2] if len(sys.argv) > 2 else r"D:\Steam\steamapps\common\Hearts of Iron IV"
+    if len(sys.argv) < 2:
+        print(__doc__)
+        return 2
+    mod = os.path.abspath(sys.argv[1])
+    if len(sys.argv) > 2:
+        game = sys.argv[2]
+    else:
+        game = os.environ.get("HOI4_GAME_ROOT", "")
+        if not game:
+            print('缺少游戏根目录。用法：python check_mod_map.py <mod目录> "<Hearts of Iron IV 安装目录>"\n'
+                  '也可以先设环境变量 HOI4_GAME_ROOT。')
+            return 2
+    if not os.path.isdir(os.path.join(game, "map")):
+        print(f"游戏根目录不对（找不到 map/）：{game}")
+        return 2
     errs, warns = [], []
 
     def E(m):
